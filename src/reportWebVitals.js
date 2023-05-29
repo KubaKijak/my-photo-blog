@@ -1,13 +1,18 @@
-const reportWebVitals = onPerfEntry => {
-  if (onPerfEntry && onPerfEntry instanceof Function) {
-    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-      getCLS(onPerfEntry);
-      getFID(onPerfEntry);
-      getFCP(onPerfEntry);
-      getLCP(onPerfEntry);
-      getTTFB(onPerfEntry);
-    });
-  }
+import React from 'react';
+
+const PostList = ({ posts, deletePost }) => {
+  return (
+    <div className="post-container">
+      {posts.map((post, index) => (
+        <div key={index} className="post">
+          <img src={post.image} alt="Post" className="post-image" />
+          <h3 className="post-title">{post.title}</h3>
+          <p className="post-text">{post.text}</p>
+          <button onClick={() => deletePost(index)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
 };
 
-export default reportWebVitals;
+export default PostList;
