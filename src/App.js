@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
+
 function App() {
   const [posts, setPosts] = useState([]);
   const [title, setTitle] = useState('');
@@ -8,6 +9,7 @@ function App() {
   const [image, setImage] = useState('');
   const [selectedPost, setSelectedPost] = useState(null);
   const [chatMessages, setChatMessages] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false); // New state for admin panel
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -48,10 +50,45 @@ function App() {
     }
   };
 
+  const handleAdminLogin = (event) => {
+    event.preventDefault();
+    const password = event.target.elements.password.value;
+    // Replace 'admin123' with your actual admin password
+    if (password === 'admin123') {
+      setIsAdmin(true);
+      event.target.reset();
+    }
+  };
+
+  const handleDeletePost = (post) => {
+    const updatedPosts = posts.filter((p) => p !== post);
+    setPosts(updatedPosts);
+    setSelectedPost(null);
+  };
+
   return (
     <div className="App">
       <h1>My Photo Blog</h1>
-      {selectedPost ? (
+      {isAdmin ? ( // Render admin panel if logged in as admin
+        <div>
+          <h2>Admin Panel</h2>
+          <h3>Posts</h3>
+          <ul className="post-list">
+            {posts.map((post, index) => (
+              <li key={index}>
+                <div className="post">
+                  <img src={post.image} alt="Post" className="post-image" />
+                  <h3 className="post-title">{post.title}</h3>
+                  <button onClick={() => handleDeletePost(post)}>
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <button onClick={() => setIsAdmin(false)}>Logout</button>
+        </div>
+      ) : selectedPost ? (
         <div>
           <h2>{selectedPost.title}</h2>
           <img src={selectedPost.image} alt="Post" className="post-image" />
@@ -103,6 +140,14 @@ function App() {
               </div>
             ))}
           </div>
+          <form onSubmit={handleAdminLogin}>
+            <input
+              type="password"
+              name="password"
+              placeholder="Admin Password"
+            />
+            <button type="submit">Admin Login</button>
+          </form>
         </div>
       )}
     </div>
